@@ -1,12 +1,15 @@
 package com.example.doppel_moppel.ui.home;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -14,8 +17,15 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.doppel_moppel.databinding.FragmentHomeBinding;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
@@ -40,6 +50,12 @@ public class HomeFragment extends Fragment {
 
         binding.btnClear.setBackgroundColor(Color.RED);
         binding.btnClear.setOnClickListener(v -> clearInputs());
+
+        binding.btnImport.setBackgroundColor(Color.CYAN);
+        binding.btnImport.setOnClickListener(v -> readFromFile(this.requireContext()));
+
+        binding.btnExport.setBackgroundColor(Color.CYAN);
+        binding.btnExport.setOnClickListener(v -> writeToFile(this.requireContext()));
     }
 
     private void enterParticipant() {
@@ -68,6 +84,50 @@ public class HomeFragment extends Fragment {
                     binding.txtEnteredParticipants.append("\n" + participants);
                 }
             }
+        }
+    }
+
+    private void writeToFile(Context context) {
+        try {
+            String data = binding.txtEnteredParticipants.getEditableText().toString();
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("config.txt", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+
+    private void readFromFile(Context context) {
+
+        String ret = "";
+
+        try {
+            InputStream inputStream = context.openFileInput("config.txt");
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append("\n").append(receiveString);
+                }
+
+                inputStream.close();
+                ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+
+        if (!ret.isEmpty()) {
+            binding.txtEnteredParticipants.setText(ret);
         }
     }
 

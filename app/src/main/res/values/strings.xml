@@ -8,4 +8,6 @@
     <string name="btn_enterParticipant">Confirm</string>
     <string name="btn_clear">Clear</string>
     <string name="btn_deleteParticipant">Delete Participant</string>
+    <string name="btn_import">Import List</string>\
+    <string name="btn_export">Export List</string>
 </resources>
