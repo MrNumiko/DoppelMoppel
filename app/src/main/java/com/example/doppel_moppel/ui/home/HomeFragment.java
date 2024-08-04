@@ -14,6 +14,9 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.doppel_moppel.databinding.FragmentHomeBinding;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
@@ -32,7 +35,8 @@ public class HomeFragment extends Fragment {
         binding.btnConfirm.setBackgroundColor(Color.GREEN);
         binding.btnConfirm.setOnClickListener(v -> enterParticipant());
 
-        binding.btnUpdateList.setBackgroundColor(Color.YELLOW);
+        binding.btnDeleteParticipant.setBackgroundColor(Color.YELLOW);
+        binding.btnDeleteParticipant.setOnClickListener(v -> updateList());
 
         binding.btnClear.setBackgroundColor(Color.RED);
         binding.btnClear.setOnClickListener(v -> clearInputs());
@@ -41,7 +45,29 @@ public class HomeFragment extends Fragment {
     private void enterParticipant() {
         String inputParticipant = binding.inputParticipants.getEditableText().toString();
         if (!inputParticipant.isEmpty()) {
-            binding.txtEnteredParticipants.append("\n" + inputParticipant);
+            binding.txtEnteredParticipants.append("\n- " + inputParticipant);
+        }
+    }
+
+    private void updateList() {
+        String participantToDelete = binding.inputParticipants.getEditableText().toString();
+        String currentList = binding.txtEnteredParticipants.getEditableText().toString();
+        ArrayList<String> tmp = new ArrayList<>();
+        if (!participantToDelete.isEmpty() && !currentList.isEmpty()) {
+            if (currentList.contains("- " + participantToDelete)) {
+                String[] currentListSplit = currentList.split("\n");
+                for (String participants : currentListSplit) {
+                    if (!participants.equals("- " + participantToDelete)) {
+                        tmp.add(participants);
+                    }
+                }
+            }
+            binding.txtEnteredParticipants.setText("");
+            for (String participants : tmp) {
+                if (!participants.isEmpty()) {
+                    binding.txtEnteredParticipants.append("\n" + participants);
+                }
+            }
         }
     }
 

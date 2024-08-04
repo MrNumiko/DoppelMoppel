@@ -7,5 +7,5 @@
     <string name="participants">Participants:</string>
     <string name="btn_enterParticipant">Confirm</string>
     <string name="btn_clear">Clear</string>
-    <string name="btn_updateList">Update List</string>
+    <string name="btn_deleteParticipant">Delete Participant</string>
 </resources>
